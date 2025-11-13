@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ExternalLink, User, Code, Eye } from 'lucide-react';
+import { ExternalLink, User, Code, Eye, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -39,6 +39,8 @@ interface ProblemCardProps {
     }>;
   };
   onToggleComplete: (problemId: string) => Promise<void>;
+  onDelete?: (problemId: string) => Promise<void>;
+  currentUserId?: string;
 }
 
 const difficultyColors = {
@@ -47,15 +49,19 @@ const difficultyColors = {
   Hard: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
-export function ProblemCard({ problem, onToggleComplete }: ProblemCardProps) {
+export function ProblemCard({ problem, onToggleComplete, onDelete, currentUserId }: ProblemCardProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(problem.isCompleted);
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('cpp');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const isCreator = currentUserId === problem.createdBy.id;
 
   const handleToggle = async () => {
     setIsLoading(true);
@@ -99,6 +105,20 @@ export function ProblemCard({ problem, onToggleComplete }: ProblemCardProps) {
 
   const handleViewSubmissions = () => {
     router.push(`/problems/${problem.id}`);
+  };
+
+  const handleDeleteProblem = async () => {
+    if (!onDelete) return;
+    
+    setDeleting(true);
+    try {
+      await onDelete(problem.id);
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to delete problem:', error);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -204,6 +224,17 @@ export function ProblemCard({ problem, onToggleComplete }: ProblemCardProps) {
                 <Eye className="h-4 w-4" />
                 <span className="hidden sm:inline">View Solutions</span>
               </Button>
+              {isCreator && onDelete && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="gap-2 cursor-pointer text-red-400 hover:text-red-300 hover:border-red-500/50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Delete</span>
+                </Button>
+              )}
             </div>
           </div>
         </CardContent>
@@ -265,6 +296,46 @@ export function ProblemCard({ problem, onToggleComplete }: ProblemCardProps) {
             </Button>
             <Button onClick={handleSubmitCode} disabled={submitting || !code.trim()}>
               {submitting ? 'Submitting...' : 'Submit Code'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Problem</DialogTitle>
+            <DialogDescription asChild>
+              <div>
+                <p className="mb-2">
+                  Are you sure you want to delete "{problem.name}"? This will permanently delete:
+                </p>
+                <ul className="ml-4 list-disc text-sm space-y-1">
+                  <li>The problem</li>
+                  <li>All completions by all users</li>
+                  <li>All code submissions</li>
+                </ul>
+                <p className="mt-3 text-red-400 font-semibold">This action cannot be undone!</p>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteProblem}
+              disabled={deleting}
+              className="gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              {deleting ? 'Deleting...' : 'Delete Problem'}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 
 interface AppSidebarProps {
   user: {
-    id: string;
+    userId: string;
     username: string;
   };
 }

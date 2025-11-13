@@ -41,6 +41,7 @@ export default function TopicProblemsPage() {
   const topicId = params.id as string;
 
   const [problems, setProblems] = useState<Problem[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   
@@ -73,7 +74,39 @@ export default function TopicProblemsPage() {
 
   useEffect(() => {
     fetchProblems();
+    fetchCurrentUser();
   }, [topicId]);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch('/api/auth/me');
+      const data = await response.json();
+      if (response.ok) {
+        setCurrentUserId(data.user.id);
+      }
+    } catch (error) {
+      console.error('Failed to fetch current user:', error);
+    }
+  };
+
+  const handleDeleteProblem = async (problemId: string) => {
+    try {
+      const response = await fetch(`/api/problems/${problemId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove problem from local state
+        setProblems(problems.filter(p => p.id !== problemId));
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to delete problem');
+      }
+    } catch (error) {
+      console.error('Failed to delete problem:', error);
+      alert('An error occurred while deleting the problem');
+    }
+  };
 
   const handleToggleComplete = async (problemId: string) => {
     const response = await fetch('/api/completions/toggle', {
@@ -341,6 +374,8 @@ export default function TopicProblemsPage() {
               key={problem.id}
               problem={problem}
               onToggleComplete={handleToggleComplete}
+              onDelete={handleDeleteProblem}
+              currentUserId={currentUserId}
             />
           ))}
         </div>
