@@ -64,8 +64,8 @@ export async function GET(
       isCompleted: completedProblemIds.has((problem._id as any).toString()),
       completedBy: completionsByProblem.get((problem._id as any).toString()) || [],
       createdBy: {
-        id: (problem.createdBy._id as any).toString(),
-        username: problem.createdBy.username,
+        id: ((problem.createdBy as any)._id as any).toString(),
+        username: (problem.createdBy as any).username,
       },
     }));
 
@@ -139,8 +139,8 @@ export async function POST(
         isCompleted: false,
         completedBy: [],
         createdBy: {
-          id: (populatedProblem!.createdBy._id as any).toString(),
-          username: populatedProblem!.createdBy.username,
+          id: ((populatedProblem!.createdBy as any)._id as any).toString(),
+          username: (populatedProblem!.createdBy as any).username,
         },
       },
     });
