@@ -159,14 +159,14 @@ export default function ProblemSubmissionsPage() {
           ))}
         </div>
       ) : submissions.length === 0 ? (
-        <div className="text-center py-16 border-2 border-dashed border-zinc-800 rounded-lg">
+        <div className="text-center py-12 sm:py-16 px-4 border-2 border-dashed border-zinc-800 rounded-lg">
           <div className="flex justify-center mb-4">
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-              <Code className="h-16 w-16 text-blue-400" />
+            <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+              <Code className="h-12 w-12 sm:h-16 sm:w-16 text-blue-400" />
             </div>
           </div>
-          <p className="text-xl font-semibold mb-2">No submissions yet</p>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-lg sm:text-xl font-semibold mb-2">No submissions yet</p>
+          <p className="text-sm sm:text-base text-muted-foreground mb-4">
             Be the first to submit a solution!
           </p>
         </div>
@@ -179,7 +179,7 @@ export default function ProblemSubmissionsPage() {
                 submission.isCurrentUser ? 'border-blue-500/50 bg-blue-500/5' : ''
               }`}
             >
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="flex items-center gap-2">
@@ -213,7 +213,7 @@ export default function ProblemSubmissionsPage() {
                   </span>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
                 {editingId === submission.id ? (
                   // Edit mode
                   <>
@@ -234,14 +234,14 @@ export default function ProblemSubmissionsPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="edit-code">Your Code</Label>
+                      <Label htmlFor="edit-code" className="text-sm">Your Code</Label>
                       <Textarea
                         id="edit-code"
                         placeholder="Paste your code here..."
                         value={editCode}
                         onChange={(e) => setEditCode(e.target.value)}
-                        rows={15}
-                        className="font-mono text-sm bg-zinc-900 border-zinc-800"
+                        rows={12}
+                        className="font-mono text-xs sm:text-sm bg-zinc-900 border-zinc-800 resize-none"
                       />
                     </div>
 
@@ -293,32 +293,52 @@ export default function ProblemSubmissionsPage() {
                             className="gap-1 sm:gap-2 h-8 text-xs sm:text-sm"
                           >
                             <Edit className="h-3 w-3" />
-                            <span className="hidden xs:inline">Edit</span>
+                            <span className="hidden sm:inline">Edit</span>
                           </Button>
                         )}
                       </div>
                       <div className="relative">
-                        <div className="rounded-lg overflow-hidden border border-zinc-800 max-h-96 overflow-y-auto">
-                          <SyntaxHighlighter
-                            language={getHighlighterLanguage(submission.language)}
-                            style={vscDarkPlus}
-                            customStyle={{
-                              margin: 0,
-                              padding: '1rem',
-                              fontSize: '0.875rem',
-                              background: '#09090b',
-                            }}
-                            wrapLines={true}
-                            showLineNumbers={true}
-                            lineNumberStyle={{ 
-                              minWidth: '3em',
-                              paddingRight: '1em',
-                              color: '#52525b',
-                              userSelect: 'none'
-                            }}
-                          >
-                            {submission.code}
-                          </SyntaxHighlighter>
+                        <div className="rounded-lg overflow-hidden border border-zinc-800 max-h-96 overflow-auto">
+                          <div className="block sm:hidden">
+                            {/* Mobile view - no line numbers, smaller font */}
+                            <SyntaxHighlighter
+                              language={getHighlighterLanguage(submission.language)}
+                              style={vscDarkPlus}
+                              customStyle={{
+                                margin: 0,
+                                padding: '0.75rem',
+                                fontSize: '0.75rem',
+                                background: '#09090b',
+                              }}
+                              wrapLines={true}
+                              showLineNumbers={false}
+                            >
+                              {submission.code}
+                            </SyntaxHighlighter>
+                          </div>
+                          <div className="hidden sm:block">
+                            {/* Desktop view - with line numbers, larger font */}
+                            <SyntaxHighlighter
+                              language={getHighlighterLanguage(submission.language)}
+                              style={vscDarkPlus}
+                              customStyle={{
+                                margin: 0,
+                                padding: '1rem',
+                                fontSize: '0.875rem',
+                                background: '#09090b',
+                              }}
+                              wrapLines={true}
+                              showLineNumbers={true}
+                              lineNumberStyle={{ 
+                                minWidth: '3em',
+                                paddingRight: '1em',
+                                color: '#52525b',
+                                userSelect: 'none'
+                              }}
+                            >
+                              {submission.code}
+                            </SyntaxHighlighter>
+                          </div>
                         </div>
                       </div>
                     </div>
