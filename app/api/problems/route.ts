@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       tags: problem.tags,
       externalLink: problem.externalLink,
       createdBy: {
-        id: (problem.createdBy._id as any).toString(),
+        id: ((problem.createdBy as any)._id as any).toString(),
         username: (problem.createdBy as any).username,
       },
       createdAt: problem.createdAt,
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
         tags: populatedProblem!.tags,
         externalLink: populatedProblem!.externalLink,
         createdBy: {
-          id: (populatedProblem!.createdBy._id as any).toString(),
+          id: ((populatedProblem!.createdBy as any)._id as any).toString(),
           username: (populatedProblem!.createdBy as any).username,
         },
         createdAt: populatedProblem!.createdAt,
