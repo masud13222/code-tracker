@@ -113,8 +113,8 @@ export default function ProblemSubmissionsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="space-y-6 px-2 sm:px-0">
+      <div className="flex items-center gap-3 sm:gap-4">
         <Button
           variant="outline"
           size="icon"
@@ -123,11 +123,13 @@ export default function ProblemSubmissionsPage() {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">Submissions</h1>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold">Submissions</h1>
           {problem && (
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-muted-foreground">{problem.name}</span>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <span className="text-sm sm:text-base text-muted-foreground truncate max-w-[200px] sm:max-w-none">
+                {problem.name}
+              </span>
               <Badge className={difficultyColors[problem.difficulty]}>
                 {problem.difficulty}
               </Badge>
@@ -163,14 +165,14 @@ export default function ProblemSubmissionsPage() {
                 submission.isCurrentUser ? 'border-blue-500/50 bg-blue-500/5' : ''
               }`}
             >
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-3">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     <div className="flex items-center gap-2">
                       <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20">
                         <User className="h-4 w-4 text-blue-400" />
                       </div>
-                      <span className="font-semibold text-lg">{submission.user.username}</span>
+                      <span className="font-semibold text-base sm:text-lg">{submission.user.username}</span>
                     </div>
                     {submission.isCurrentUser && (
                       <Badge variant="secondary" className="text-xs">
@@ -186,7 +188,7 @@ export default function ProblemSubmissionsPage() {
                       </Badge>
                     )}
                   </div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     {new Date(submission.submittedAt).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
@@ -241,11 +243,11 @@ export default function ProblemSubmissionsPage() {
                       />
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Button 
                         onClick={() => handleSaveEdit(submission.id)}
                         disabled={saving || !editCode.trim()}
-                        className="gap-2"
+                        className="gap-2 w-full sm:w-auto"
                       >
                         <Save className="h-4 w-4" />
                         {saving ? 'Saving...' : 'Save Changes'}
@@ -254,7 +256,7 @@ export default function ProblemSubmissionsPage() {
                         variant="outline" 
                         onClick={handleCancelEdit}
                         disabled={saving}
-                        className="gap-2"
+                        className="gap-2 w-full sm:w-auto"
                       >
                         <X className="h-4 w-4" />
                         Cancel
@@ -266,7 +268,7 @@ export default function ProblemSubmissionsPage() {
                   <>
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <Label className="text-xs text-muted-foreground">
+                        <Label className="text-xs sm:text-sm text-muted-foreground">
                           Solution Code:
                         </Label>
                         {submission.isCurrentUser && (
@@ -274,25 +276,25 @@ export default function ProblemSubmissionsPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEditClick(submission)}
-                            className="gap-2 h-8"
+                            className="gap-1 sm:gap-2 h-8 text-xs sm:text-sm"
                           >
                             <Edit className="h-3 w-3" />
-                            Edit
+                            <span className="hidden xs:inline">Edit</span>
                           </Button>
                         )}
                       </div>
                       <div className="relative">
-                        <pre className="p-4 bg-zinc-950 rounded-lg overflow-x-auto text-sm border border-zinc-800 max-h-96 overflow-y-auto">
-                          <code className="text-zinc-300">{submission.code}</code>
+                        <pre className="p-3 sm:p-4 bg-zinc-950 rounded-lg overflow-x-auto text-xs sm:text-sm border border-zinc-800 max-h-96 overflow-y-auto">
+                          <code className="text-zinc-300 break-all sm:break-normal">{submission.code}</code>
                         </pre>
                       </div>
                     </div>
                     {submission.notes && (
-                      <div className="p-4 bg-zinc-900 rounded-lg border border-zinc-800">
-                        <Label className="text-xs text-muted-foreground mb-2 block">
+                      <div className="p-3 sm:p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+                        <Label className="text-xs sm:text-sm text-muted-foreground mb-2 block">
                           Notes:
                         </Label>
-                        <p className="text-sm text-zinc-300 whitespace-pre-wrap">
+                        <p className="text-xs sm:text-sm text-zinc-300 whitespace-pre-wrap break-words">
                           {submission.notes}
                         </p>
                       </div>

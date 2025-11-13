@@ -52,6 +52,7 @@ export async function GET(
       });
     }
 
+    // Map problems with status
     const problemsWithStatus = problems.map((problem) => ({
       id: (problem._id as any).toString(),
       name: problem.name,
@@ -68,6 +69,15 @@ export async function GET(
         username: (problem.createdBy as any).username,
       },
     }));
+
+    // Sort by difficulty: Easy -> Medium -> Hard
+    const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
+    problemsWithStatus.sort((a, b) => {
+      const diffComparison = difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      if (diffComparison !== 0) return diffComparison;
+      // If same difficulty, sort by order
+      return (a.order || 0) - (b.order || 0);
+    });
 
     return NextResponse.json({ problems: problemsWithStatus });
   } catch (error) {
