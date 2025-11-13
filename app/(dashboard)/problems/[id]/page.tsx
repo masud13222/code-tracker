@@ -298,7 +298,10 @@ export default function ProblemSubmissionsPage() {
                         )}
                       </div>
                       <div className="relative">
-                        <div className="rounded-lg overflow-hidden border border-zinc-800 max-h-96 overflow-auto">
+                        <div 
+                          className="rounded-lg border border-zinc-800 bg-zinc-950 overflow-y-auto overflow-x-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-zinc-900 [&::-webkit-scrollbar-track]:rounded [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:hover:bg-zinc-600"
+                          style={{ maxHeight: '24rem' }}
+                        >
                           <div className="block sm:hidden">
                             {/* Mobile view - no line numbers, smaller font */}
                             <SyntaxHighlighter
@@ -309,9 +312,15 @@ export default function ProblemSubmissionsPage() {
                                 padding: '0.75rem',
                                 fontSize: '0.75rem',
                                 background: '#09090b',
+                                overflow: 'visible',
                               }}
                               wrapLines={true}
                               showLineNumbers={false}
+                              PreTag={({ children, ...props }) => (
+                                <pre {...props} style={{ margin: 0, padding: 0, background: '#09090b', overflow: 'visible' }}>
+                                  {children}
+                                </pre>
+                              )}
                             >
                               {submission.code}
                             </SyntaxHighlighter>
@@ -326,6 +335,7 @@ export default function ProblemSubmissionsPage() {
                                 padding: '1rem',
                                 fontSize: '0.875rem',
                                 background: '#09090b',
+                                overflow: 'visible',
                               }}
                               wrapLines={true}
                               showLineNumbers={true}
@@ -335,6 +345,11 @@ export default function ProblemSubmissionsPage() {
                                 color: '#52525b',
                                 userSelect: 'none'
                               }}
+                              PreTag={({ children, ...props }) => (
+                                <pre {...props} style={{ margin: 0, padding: 0, background: '#09090b', overflow: 'visible' }}>
+                                  {children}
+                                </pre>
+                              )}
                             >
                               {submission.code}
                             </SyntaxHighlighter>
