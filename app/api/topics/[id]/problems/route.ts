@@ -32,7 +32,7 @@ export async function GET(
     // Get user's completions
     const completions = await Completion.find({ userId: user.userId });
     const completedProblemIds = new Set(
-      completions.map((c) => c.problemId.toString())
+      completions.map((c) => (c.problemId as any).toString())
     );
 
     // Get all completions for these problems with user info

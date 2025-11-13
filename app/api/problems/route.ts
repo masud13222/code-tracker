@@ -33,23 +33,23 @@ export async function GET(request: NextRequest) {
     // Get user's completions
     const completions = await Completion.find({ userId: user.userId });
     const completedProblemIds = new Set(
-      completions.map((c) => c.problemId.toString())
+      completions.map((c) => (c.problemId as any).toString())
     );
 
     // Add completion status to each problem
     const problemsWithStatus = problems.map((problem) => ({
-      id: problem._id.toString(),
+      id: (problem._id as any).toString(),
       name: problem.name,
       description: problem.description,
       difficulty: problem.difficulty,
       tags: problem.tags,
       externalLink: problem.externalLink,
       createdBy: {
-        id: problem.createdBy._id.toString(),
-        username: problem.createdBy.username,
+        id: (problem.createdBy._id as any).toString(),
+        username: (problem.createdBy as any).username,
       },
       createdAt: problem.createdAt,
-      isCompleted: completedProblemIds.has(problem._id.toString()),
+      isCompleted: completedProblemIds.has((problem._id as any).toString()),
     }));
 
     return NextResponse.json({ problems: problemsWithStatus });
@@ -106,15 +106,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       problem: {
-        id: populatedProblem!._id.toString(),
+        id: (populatedProblem!._id as any).toString(),
         name: populatedProblem!.name,
         description: populatedProblem!.description,
         difficulty: populatedProblem!.difficulty,
         tags: populatedProblem!.tags,
         externalLink: populatedProblem!.externalLink,
         createdBy: {
-          id: populatedProblem!.createdBy._id.toString(),
-          username: populatedProblem!.createdBy.username,
+          id: (populatedProblem!.createdBy._id as any).toString(),
+          username: (populatedProblem!.createdBy as any).username,
         },
         createdAt: populatedProblem!.createdAt,
         isCompleted: false,
