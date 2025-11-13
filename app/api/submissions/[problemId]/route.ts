@@ -37,7 +37,7 @@ export async function GET(
     // Get completions
     const completions = await Completion.find({ problemId });
     const completedUserIds = new Set(
-      completions.map((c) => c.userId.toString())
+      completions.map((c) => (c.userId as any).toString())
     );
 
     const submissionsWithStatus = submissions.map((sub) => ({
@@ -47,11 +47,11 @@ export async function GET(
       notes: sub.notes,
       submittedAt: sub.submittedAt,
       user: {
-        id: (sub.userId._id as any).toString(),
-        username: sub.userId.username,
+        id: ((sub.userId as any)._id as any).toString(),
+        username: (sub.userId as any).username,
       },
-      isCompleted: completedUserIds.has((sub.userId._id as any).toString()),
-      isCurrentUser: (sub.userId._id as any).toString() === user.userId,
+      isCompleted: completedUserIds.has(((sub.userId as any)._id as any).toString()),
+      isCurrentUser: ((sub.userId as any)._id as any).toString() === user.userId,
     }));
 
     return NextResponse.json({ 
