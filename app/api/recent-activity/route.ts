@@ -38,10 +38,10 @@ export async function GET(request: NextRequest) {
       .filter((completion) => completion.problemId && completion.userId)
       .map((completion) => ({
         id: (completion._id as any).toString(),
-        problemId: (completion.problemId._id as any).toString(),
-        problemName: completion.problemId.name,
-        difficulty: completion.problemId.difficulty,
-        topicName: completion.problemId.topicId?.name || 'Unknown',
+        problemId: ((completion.problemId as any)._id as any).toString(),
+        problemName: (completion.problemId as any).name,
+        difficulty: (completion.problemId as any).difficulty,
+        topicName: (completion.problemId as any).topicId?.name || 'Unknown',
         username: (completion.userId as any).username,
         completedAt: completion.completedAt,
       }));

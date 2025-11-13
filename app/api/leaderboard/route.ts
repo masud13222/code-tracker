@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const leaderboardData = await Promise.all(
       users.map(async (dbUser) => {
         const completionCount = await Completion.countDocuments({
-          userId: dbUser._id,
+          userId: (dbUser._id as any),
         });
 
         const completionPercentage =

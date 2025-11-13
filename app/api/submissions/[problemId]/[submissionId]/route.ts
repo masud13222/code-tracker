@@ -34,7 +34,7 @@ export async function PUT(
     }
 
     // Check if user owns this submission
-    if (submission.userId.toString() !== user.userId) {
+    if ((submission.userId as any).toString() !== user.userId) {
       return NextResponse.json(
         { error: 'You can only edit your own submissions' },
         { status: 403 }

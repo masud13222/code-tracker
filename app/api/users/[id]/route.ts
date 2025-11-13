@@ -48,7 +48,7 @@ export async function GET(
 
     for (const completion of completions) {
       if (completion.problemId) {
-        switch (completion.problemId.difficulty) {
+        switch ((completion.problemId as any).difficulty) {
           case 'Easy':
             easyCount++;
             break;
@@ -65,9 +65,9 @@ export async function GET(
     // Count by topic
     const topicMap = new Map<string, { name: string; count: number }>();
     for (const completion of completions) {
-      if (completion.problemId && completion.problemId.topicId) {
-        const topicId = (completion.problemId.topicId._id as any).toString();
-        const topicName = completion.problemId.topicId.name;
+      if (completion.problemId && (completion.problemId as any).topicId) {
+        const topicId = (((completion.problemId as any).topicId as any)._id as any).toString();
+        const topicName = ((completion.problemId as any).topicId as any).name;
         
         if (topicMap.has(topicId)) {
           topicMap.get(topicId)!.count++;

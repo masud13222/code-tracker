@@ -39,17 +39,17 @@ export async function GET(request: NextRequest) {
 
     completions.forEach((completion: any) => {
       if (completion.problemId) {
-        if (completion.problemId.difficulty === 'Easy') easyCount++;
-        else if (completion.problemId.difficulty === 'Medium') mediumCount++;
-        else if (completion.problemId.difficulty === 'Hard') hardCount++;
+        if ((completion.problemId as any).difficulty === 'Easy') easyCount++;
+        else if ((completion.problemId as any).difficulty === 'Medium') mediumCount++;
+        else if ((completion.problemId as any).difficulty === 'Hard') hardCount++;
       }
     });
 
     const recentCompletions = userCompletions.map((completion: any) => ({
-      id: completion._id.toString(),
-      problemId: completion.problemId._id.toString(),
-      problemName: completion.problemId.name,
-      difficulty: completion.problemId.difficulty,
+      id: (completion._id as any).toString(),
+      problemId: ((completion.problemId as any)._id as any).toString(),
+      problemName: (completion.problemId as any).name,
+      difficulty: (completion.problemId as any).difficulty,
       completedAt: completion.completedAt,
     }));
 
