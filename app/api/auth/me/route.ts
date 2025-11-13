@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       user: {
-        id: dbUser._id.toString(),
+        id: (dbUser._id as any).toString(),
         username: dbUser.username,
         createdAt: dbUser.createdAt,
       },
