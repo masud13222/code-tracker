@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { 
   ChevronRight,
   Code2, 
@@ -71,7 +70,12 @@ export function TopicCard({ topic }: TopicCardProps) {
               {topic.completedProblems} / {topic.totalProblems}
             </span>
           </div>
-          <Progress value={topic.progress} className="h-2" />
+          <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all"
+              style={{ width: `${topic.progress}%` }}
+            />
+          </div>
           <div className="text-xs text-muted-foreground text-right">
             {topic.progress}% complete
           </div>

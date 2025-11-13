@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
     // Get all users
     const users = await User.find().select('_id username');
 
-    // Get total problems count
-    const totalProblems = await Problem.countDocuments();
+    // Get total problems count (only actual problems, not topics)
+    const totalProblems = await Problem.countDocuments({ topicId: { $exists: true, $ne: null } });
 
     // Get completion counts for each user
     const leaderboardData = await Promise.all(
