@@ -1,0 +1,211 @@
+# Code Tracker - Development Guidelines
+
+## Project Overview
+A collaborative code tracking platform for 4-5 users to track problem-solving progress.
+
+## Tech Stack
+- Next.js 14 (App Router)
+- TypeScript
+- shadcn/ui
+- Tailwind CSS v4
+- MongoDB + Mongoose
+- JWT Authentication
+
+## Key Features
+1. User authentication (username/password)
+2. Problem creation and management
+3. Checkbox-based completion tracking
+4. Real-time leaderboard
+5. Personal dashboard and profile
+6. Dark mode UI
+
+## Development Commands
+```bash
+npm run dev    # Start development server
+npm run build  # Build for production
+npm start      # Start production server
+npm run lint   # Run linter
+```
+
+## Coding Conventions
+
+### File Structure
+- Use TypeScript for all files
+- Client components: 'use client' directive at top
+- Server components: default (no directive)
+- API routes in app/api/
+- Components in components/
+- Utilities in lib/
+
+### Naming Conventions
+- Components: PascalCase (ProblemCard.tsx)
+- Files: kebab-case (problem-card.tsx)
+- API routes: route.ts
+- Variables: camelCase
+
+### UI/UX Guidelines
+- Use shadcn/ui components consistently
+- Maintain dark theme (zinc colors)
+- Add blue/purple gradient for primary actions
+- Ensure responsive design (mobile-first)
+- Use loading states (Skeleton)
+- Add error handling
+
+### Database
+- Always connect to DB before queries
+- Use Mongoose models from lib/models/
+- Handle errors gracefully
+- Use proper indexes
+
+### Authentication
+- Verify JWT token in protected routes
+- Use getUserFromRequest() helper
+- Store tokens in httpOnly cookies
+- Hash passwords with bcryptjs
+
+### State Management
+- Use React hooks (useState, useEffect)
+- Fetch data on mount
+- Handle loading and error states
+- Optimistic UI updates where possible
+
+## Environment Variables
+- MONGODB_URI: Database connection string
+- JWT_SECRET: Secret key for JWT
+- NEXT_PUBLIC_APP_URL: Application URL
+
+## Common Patterns
+
+### API Route Structure
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { getUserFromRequest } from '@/lib/auth';
+import connectDB from '@/lib/mongodb';
+
+export async function GET(request: NextRequest) {
+  try {
+    const user = getUserFromRequest(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+    
+    await connectDB();
+    // Your logic here
+    
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+```
+
+### Client Component Pattern
+```typescript
+'use client';
+
+import { useState, useEffect } from 'react';
+
+export default function Component() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/endpoint');
+      const data = await response.json();
+      if (response.ok) {
+        setData(data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Skeleton />;
+  
+  return <div>{/* Your JSX */}</div>;
+}
+```
+
+## Design System
+
+### Colors
+- Background: zinc-950
+- Cards: zinc-900
+- Borders: zinc-800
+- Primary: Blue/Purple gradient
+- Success: green-500
+- Warning: yellow-500
+- Error: red-500
+
+### Typography
+- Headings: font-bold
+- Body: default
+- Muted: text-muted-foreground
+
+### Spacing
+- Use Tailwind spacing scale
+- Consistent gap-4 or gap-6
+- Padding: p-4 or p-6
+
+## Testing Checklist
+- [ ] Authentication flow
+- [ ] Problem CRUD operations
+- [ ] Completion tracking
+- [ ] Leaderboard updates
+- [ ] Responsive design
+- [ ] Error handling
+- [ ] Loading states
+
+## Security Considerations
+- Never expose JWT_SECRET
+- Always validate user input
+- Use parameterized queries
+- Sanitize user data
+- Implement rate limiting (future)
+
+## Performance Tips
+- Use MongoDB indexes
+- Minimize API calls
+- Implement caching
+- Optimize images
+- Lazy load components
+
+## Common Issues & Solutions
+
+### Database Connection
+- Ensure MONGODB_URI is correct
+- Check network connectivity
+- Verify IP whitelist in MongoDB Atlas
+
+### Authentication Issues
+- Clear cookies in browser
+- Check JWT_SECRET is set
+- Verify token expiration
+
+### Build Errors
+- Clear .next folder
+- Reinstall node_modules
+- Check TypeScript errors
+
+## Git Workflow
+1. Create feature branch
+2. Make changes
+3. Test locally
+4. Commit with clear message
+5. Push and create PR
+6. Review and merge
+
+## Resources
+- Next.js Docs: https://nextjs.org/docs
+- shadcn/ui: https://ui.shadcn.com
+- Tailwind CSS: https://tailwindcss.com
+- MongoDB: https://mongodb.com/docs
+
