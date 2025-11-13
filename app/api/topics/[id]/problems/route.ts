@@ -52,7 +52,7 @@ export async function GET(
       });
     }
 
-    // Map problems with status
+    // Map problems with status (preserve createdAt for sorting)
     const problemsWithStatus = problems.map((problem) => ({
       id: (problem._id as any).toString(),
       name: problem.name,
@@ -60,23 +60,34 @@ export async function GET(
       difficulty: problem.difficulty,
       tags: problem.tags,
       externalLink: problem.externalLink,
-      order: problem.order,
+      order: problem.order || 0,
       isRecommended: problem.isRecommended,
       isCompleted: completedProblemIds.has((problem._id as any).toString()),
       completedBy: completionsByProblem.get((problem._id as any).toString()) || [],
+      createdAt: problem.createdAt,
       createdBy: {
         id: ((problem.createdBy as any)._id as any).toString(),
         username: (problem.createdBy as any).username,
       },
     }));
 
-    // Sort by difficulty: Easy -> Medium -> Hard
+    // Sort by difficulty: Easy -> Medium -> Hard, then by order, then by createdAt
     const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
     problemsWithStatus.sort((a, b) => {
+      // First sort by difficulty
       const diffComparison = difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
       if (diffComparison !== 0) return diffComparison;
-      // If same difficulty, sort by order
-      return (a.order || 0) - (b.order || 0);
+      
+      // If same difficulty, sort by order (if order is set and non-zero)
+      const aOrder = a.order || 0;
+      const bOrder = b.order || 0;
+      if (aOrder !== 0 && bOrder !== 0) {
+        const orderComparison = aOrder - bOrder;
+        if (orderComparison !== 0) return orderComparison;
+      }
+      
+      // If same order (or both are 0), sort by createdAt (oldest first)
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
 
     return NextResponse.json({ problems: problemsWithStatus });
