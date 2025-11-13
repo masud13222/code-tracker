@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Submission {
   id: string;
@@ -36,6 +38,18 @@ const difficultyColors = {
   Easy: 'bg-green-500/10 text-green-400 border-green-500/20',
   Medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
   Hard: 'bg-red-500/10 text-red-400 border-red-500/20',
+};
+
+// Map submission language to syntax highlighter language
+const getHighlighterLanguage = (lang: string): string => {
+  const languageMap: Record<string, string> = {
+    cpp: 'cpp',
+    python: 'python',
+    java: 'java',
+    javascript: 'javascript',
+    c: 'c',
+  };
+  return languageMap[lang.toLowerCase()] || 'javascript';
 };
 
 export default function ProblemSubmissionsPage() {
@@ -284,9 +298,28 @@ export default function ProblemSubmissionsPage() {
                         )}
                       </div>
                       <div className="relative">
-                        <pre className="p-3 sm:p-4 bg-zinc-950 rounded-lg overflow-x-auto text-xs sm:text-sm border border-zinc-800 max-h-96 overflow-y-auto">
-                          <code className="text-zinc-300 break-all sm:break-normal">{submission.code}</code>
-                        </pre>
+                        <div className="rounded-lg overflow-hidden border border-zinc-800 max-h-96 overflow-y-auto">
+                          <SyntaxHighlighter
+                            language={getHighlighterLanguage(submission.language)}
+                            style={vscDarkPlus}
+                            customStyle={{
+                              margin: 0,
+                              padding: '1rem',
+                              fontSize: '0.875rem',
+                              background: '#09090b',
+                            }}
+                            wrapLines={true}
+                            showLineNumbers={true}
+                            lineNumberStyle={{ 
+                              minWidth: '3em',
+                              paddingRight: '1em',
+                              color: '#52525b',
+                              userSelect: 'none'
+                            }}
+                          >
+                            {submission.code}
+                          </SyntaxHighlighter>
+                        </div>
                       </div>
                     </div>
                     {submission.notes && (
