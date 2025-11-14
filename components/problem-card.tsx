@@ -41,6 +41,7 @@ interface ProblemCardProps {
   onToggleComplete: (problemId: string) => Promise<void>;
   onDelete?: (problemId: string) => Promise<void>;
   currentUserId?: string;
+  serialNumber?: number;
 }
 
 const difficultyColors = {
@@ -49,7 +50,7 @@ const difficultyColors = {
   Hard: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
-export function ProblemCard({ problem, onToggleComplete, onDelete, currentUserId }: ProblemCardProps) {
+export function ProblemCard({ problem, onToggleComplete, onDelete, currentUserId, serialNumber }: ProblemCardProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(problem.isCompleted);
@@ -144,7 +145,7 @@ export function ProblemCard({ problem, onToggleComplete, onDelete, currentUserId
                   }`}
                   onClick={handleViewSubmissions}
                 >
-                  {problem.order && <span className="text-muted-foreground mr-2">{problem.order}.</span>}
+                  {serialNumber !== undefined && <span className="text-muted-foreground mr-2">{serialNumber}.</span>}
                   {problem.name}
                   {problem.isRecommended && <span className="ml-2">⭐</span>}
                   {isCompleted && <span className="ml-2">✓</span>}

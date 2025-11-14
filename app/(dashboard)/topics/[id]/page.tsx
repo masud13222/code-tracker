@@ -369,13 +369,14 @@ export default function TopicProblemsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {problems.map((problem) => (
+          {problems.map((problem, index) => (
             <ProblemCard
               key={problem.id}
               problem={problem}
               onToggleComplete={handleToggleComplete}
               onDelete={handleDeleteProblem}
               currentUserId={currentUserId}
+              serialNumber={index + 1}
             />
           ))}
         </div>
